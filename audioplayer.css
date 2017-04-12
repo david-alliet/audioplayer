@@ -1,0 +1,128 @@
+/* styles for audio player */
+
+.dal_audioplayer {
+  width: 31%;
+  min-width: 20em;
+  margin: 0 auto;
+  background: #eee;
+  padding: 0;
+  border: 2px #aaa solid;
+}
+
+ul {
+  padding: 1em;
+  margin: 0;
+}
+ul li {
+  margin: 0.3em 0;
+  list-style-type: none;
+}
+ul li:first-child {
+  margin-top: 0;
+}
+ul li:last-child {
+  margin-bottom: 0;
+}
+
+/* tracks styling */
+.apTrack {
+  cursor: pointer;
+}
+
+.apTrack:hover {
+  font-weight: bold;
+}
+
+.apTrack.apActive {
+  font-weight: bold;
+}
+
+/* the area for the progress bar and duration */
+.apProgress {
+  margin: 0;
+  padding: 0;
+  height: 1em;
+}
+
+.apSeekBar {
+  width: calc(100% - 4rem);
+  background: #ccc;
+  height: 100%;
+  float: left;
+  position: relative;
+  cursor: default;
+}
+.apSeekBar:hover {
+  cursor: pointer;
+}
+
+.apProgressBar {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  background: #999;
+  height: 5px;
+}
+
+.apIndicatorBar {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  background: #000;
+  opacity: .0;
+  height: 5px;
+
+  transition-duration: .5s;
+  transition-property: opacity;
+}
+
+
+.apDuration {
+  box-sizing: border-box;
+  width: 4rem;
+  height: 100%;
+  float: right;
+  font-size: 0.85em;
+  padding-top: 0.1em;
+  text-align: center;
+  background: #ccc;
+  vertical-align: middle;
+}
+
+/* the area for the buttons play/pause, stop, previous and next */
+.apControls {
+  text-align: center;
+  background: #aaa;
+  padding: 1em;
+  vertical-align: top;
+}
+
+.apControls .apControl {
+
+  vertical-align: top;
+  position: relative;
+  display: inline-block;
+  padding: 0.5em;
+  margin: 0 0.3em;
+  margin-top: 2px;
+
+  font-weight: bold;
+  color: #404040;
+  background: none;
+  border: 2px #404040 solid;
+  border-radius: 3em;
+  cursor: pointer;
+
+  transition-property: all;
+  transition-duration: 0.1s;
+}
+
+.apControls .apControl:hover {
+  margin-top: 0px;
+  background: #eee;
+  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.apControls .apControl:focus {
+  outline: none;
+}

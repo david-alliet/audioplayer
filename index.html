@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Audio player</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="audioplayer.css" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+
+<div class="dal_audioplayer" id="audioplayer" data-mode="globalcontrols">
+  <ul>
+    <li><audio src="assets/04-supercrush-qtxmp3.mp3" preload="metadata"></audio> A functioning track</li>
+    <li><audio src="assets/06-resolve-qtxmp3.mp3" preload="metadata"></audio>Another track</li>
+  </ul>
+</div>
+
+
+<script src="audioplayer.js" type="text/javascript"></script>
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function(e){
+    detectAudioPlayers();
+  });
+</script>
+
+</body>
+</html>
