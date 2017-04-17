@@ -97,8 +97,43 @@ ul li:last-child {
   vertical-align: top;
 }
 
-.apControls .apControl {
+.apControls:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+.apControls:after { display: inline-block; }
+/* start commented backslash hack \*/
+* html .apControls:after { height: 1%; }
+.apControls:after { display: block; }
+/* close commented backslash hack */
 
+
+
+.apControls .apPane {
+  box-sizing: border-box;
+  float: left;
+  margin: 0;
+}
+
+.apPane.left {
+  text-align: left;
+  width: 30%;
+}
+
+.apPane.middle {
+  text-align: center;
+  width: 40%;
+}
+
+.apPane.right {
+  text-align: right;
+  width: 30%;
+}
+.apControls .apPane .apControl {
   vertical-align: top;
   position: relative;
   display: inline-block;
@@ -118,9 +153,9 @@ ul li:last-child {
 }
 
 .apControls .apControl:hover {
-  margin-top: 0px;
+  margin-top: 0;
   background: #eee;
-  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .apControls .apControl:focus {

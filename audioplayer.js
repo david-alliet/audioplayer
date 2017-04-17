@@ -41,6 +41,15 @@ function AudioPlayer(node) {
   var apControls = document.createElement("div");
   apControls.className = "apControls";
 
+  var leftControlPane = document.createElement("div");
+  leftControlPane.className = "apPane left";
+
+  var middleControlPane = document.createElement("div");
+  middleControlPane.className = "apPane middle";
+
+  var rightControlPane = document.createElement("div");
+  rightControlPane.className = "apPane right";
+
   var apProgress = document.createElement("div");
   apProgress.className = "apProgress";
 
@@ -161,13 +170,19 @@ function AudioPlayer(node) {
   apProgress.appendChild(this.seekBar);
   apProgress.appendChild(this.txtDuration);
 
-  apControls.appendChild(this.ctrlPrevious);
-  apControls.appendChild(this.ctrlPlayPause);
-  apControls.appendChild(this.ctrlStop);
-  apControls.appendChild(this.ctrlNext);
+  // add the track controls to the left, middle or right panels
+  leftControlPane.appendChild(this.ctrlPrevious);
+  middleControlPane.appendChild(this.ctrlPlayPause);
+  middleControlPane.appendChild(this.ctrlStop);
+  rightControlPane.appendChild(this.ctrlNext);
   apControls.appendChild(this.ctrlVolume);
 
   apControls.appendChild(this.panelVolume);
+
+  // add panels to the container
+  apControls.appendChild(leftControlPane);
+  apControls.appendChild(middleControlPane);
+  apControls.appendChild(rightControlPane);
 
   // add containers to player
   this.audioPlayerElement.appendChild(apProgress);
