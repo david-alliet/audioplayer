@@ -1,20 +1,21 @@
 /* styles for audio player */
 
 .dal_audioplayer {
-  width: 31%;
-  min-width: 20em;
+  width: 100%;
+  max-width: 30em;
   margin: 0 auto;
   background: #eee;
   padding: 0;
   border: 2px #aaa solid;
+  border-radius: .5em;
 }
 
 ul {
-  padding: 1em;
+  padding: 0;
   margin: 0;
 }
 ul li {
-  margin: 0.3em 0;
+  margin: 0;
   list-style-type: none;
 }
 ul li:first-child {
@@ -26,26 +27,39 @@ ul li:last-child {
 
 /* tracks styling */
 .apTrack {
+  padding: .5em 1em;
+  margin: 0;
+  border-bottom: 1px #aaa solid;
   cursor: pointer;
+  transition-property: background-color;
+  transition-duration: .5s;
+}
+.apTrack:last-child {
 }
 
 .apTrack:hover {
-  font-weight: bold;
+  background: #aaa;
 }
 
 .apTrack.apActive {
   font-weight: bold;
+  background: #ccc;
+}
+
+.apTrack .apDuration {
+  background: transparent;
+  text-align: right;
 }
 
 /* the area for the progress bar and duration */
 .apProgress {
   margin: 0;
   padding: 0;
-  height: 1em;
+  height: .6em;
 }
 
 .apSeekBar {
-  width: calc(100% - 4rem);
+  width: 100%;
   background: #ccc;
   height: 100%;
   float: left;
@@ -61,7 +75,7 @@ ul li:last-child {
   bottom: 0;
   width: 0;
   background: #999;
-  height: 5px;
+  height: .6em;
 }
 
 .apIndicatorBar {
@@ -70,7 +84,7 @@ ul li:last-child {
   width: 0;
   background: #000;
   opacity: .0;
-  height: 5px;
+  height: .6em;
 
   transition-duration: .5s;
   transition-property: opacity;
@@ -94,6 +108,7 @@ ul li:last-child {
   text-align: center;
   background: #aaa;
   padding: 1em;
+  padding-bottom: 1.1em;
   vertical-align: top;
 }
 
@@ -121,18 +136,13 @@ ul li:last-child {
 
 .apPane.left {
   text-align: left;
-  width: 30%;
+  width: 50%;
 }
-
-.apPane.middle {
-  text-align: center;
-  width: 40%;
-}
-
 .apPane.right {
   text-align: right;
-  width: 30%;
+  width: 50%;
 }
+
 .apControls .apPane .apControl {
   vertical-align: top;
   position: relative;
@@ -160,4 +170,33 @@ ul li:last-child {
 
 .apControls .apControl:focus {
   outline: none;
+}
+
+
+
+.apVolumePanel {
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  margin-top: .6em;
+  width: 0px;
+  height: .6em;
+  background: transparent;
+  border-style: solid;
+  border-radius: .5em;
+  border-color: #404040;
+  border-width: 0;
+  overflow: hidden;
+
+  transition-duration: .3s;
+  transition-property: width, margin;
+}
+.apVolumePanel:hover {
+  cursor: pointer;
+}
+
+.apVolumePanel .apIndicatorBar {
+  top: 0;
+  height: 1em;
+  opacity: .3;
 }
