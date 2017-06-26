@@ -14,6 +14,7 @@ function AudioPlayer(node) {
   this.mode = node.dataset.mode; // mode of the player (currently not implemented)
   this.trackList = []; // will hold all tracks
   this.trackIndex = 0; // what track the player is currently on
+  this.totalTracks = 0; // total number of tracks
   this.progressTimer = null; // timer to update seek-bar and time signature
   //this.seekTimer = null; // the timer checking
   this.playing = false; // is the player currently playing a track?
@@ -33,15 +34,17 @@ function AudioPlayer(node) {
     // add functionality and classes to the parent element
     tracks[i].parentNode.className = "apTrack";
     tracks[i].parentNode.dataset.number = i;
+    tracks[i].parentNode.tabIndex = i+1;
     // add event listener for click to each track
     tracks[i].parentNode.addEventListener("mousedown", function(e){
       this.stop();
-      this.trackIndex = parseInt(e.srcElement.dataset.number);
+      this.trackIndex = parseInt(e.target.dataset.number);
       this.play();
     }.bind(this));
     // add processed track to array
     this.trackList.push(t);
   }
+  this.totalTracks = this.trackList.length;
 
   // create containers to hold all UI elements
   // controls contain all buttons
@@ -61,6 +64,7 @@ function AudioPlayer(node) {
   this.ctrlPrevious = document.createElement("button");
   this.ctrlPrevious.className = "apControl apPrevious";
   this.ctrlPrevious.innerHTML = "&lt;&lt;";
+  this.tabIndex = this.totalTracks+5;
   this.ctrlPrevious.addEventListener("click", function(e) {
     this.previous();
   }.bind(this));
@@ -69,10 +73,11 @@ function AudioPlayer(node) {
   this.ctrlPlayPause = document.createElement("button");
   this.ctrlPlayPause.className = "apControl apPlay";
   this.ctrlPlayPause.innerHTML = "play";
+  this.tabIndex = this.totalTracks+2;
   this.ctrlPlayPause.dataset.mode = "play";
   this.ctrlPlayPause.addEventListener("click", function(e) {
     // detect if the player is currently playing, if so pause instead of play
-    if(e.srcElement.dataset.mode==="play") {
+    if(e.target.dataset.mode==="play") {
       this.play();
     } else {
       this.pause();
@@ -84,6 +89,7 @@ function AudioPlayer(node) {
   this.ctrlNext = document.createElement("button");
   this.ctrlNext.className = "apControl apNext";
   this.ctrlNext.innerHTML = "&gt;&gt;";
+  this.tabIndex = this.totalTracks+6;
   this.ctrlNext.addEventListener("click", function(e) {
     this.next();
   }.bind(this));
@@ -92,6 +98,7 @@ function AudioPlayer(node) {
   this.ctrlStop = document.createElement("button");
   this.ctrlStop.className = "apControl apStop";
   this.ctrlStop.innerHTML = "stop";
+  this.tabIndex = this.totalTracks+3;
   this.ctrlStop.addEventListener("click", function(e) {
     // stop the player
     this.playing = false;
@@ -102,6 +109,8 @@ function AudioPlayer(node) {
   // seek bar:
   this.seekBar = document.createElement("div");
   this.seekBar.className = "apSeekBar";
+  this.seekBar.tabIndex = this.totalTracks+1;
+  this.seekBar.title = "Press the right or left arrow keys to seek forward or backward in the track.";
   // event: mouse over (indicates seeking)
   this.seekBar.addEventListener("mouseover", function(e){
     if(this.playing) {
@@ -143,14 +152,15 @@ function AudioPlayer(node) {
   this.ctrlVolume = document.createElement("button");
   this.ctrlVolume.className = "apControl apVolume";
   this.ctrlVolume.innerHTML = "Vol";
+  this.tabIndex = this.totalTracks+4;
   this.ctrlVolume.dataset.opened = false;
   // open or collapse volume panel
   this.ctrlVolume.addEventListener("click", function(e){
-    if(e.srcElement.dataset.opened=="false") {
+    if(e.target.dataset.opened=="false") {
       this.panelVolume.style = "border-color: #404040; border-width: 2px; margin-left: .3em; margin-right: .3em; width: 75px;";
-      e.srcElement.dataset.opened = true;
+      e.target.dataset.opened = true;
     } else {
-      e.srcElement.dataset.opened = false;
+      e.target.dataset.opened = false;
       this.panelVolume.style = "border-color: #404040; margin-left: 0; margin-right: 0; width: 0px; border-width: 2px;";
     }
   }.bind(this));
@@ -168,7 +178,7 @@ function AudioPlayer(node) {
   // mouse down on on panel: set volume
   this.panelVolume.addEventListener("mousedown", function(e) {
     this.volumeDrag = true;
-    this.adjustVolume(e.offsetX, this.panelVolume.offsetWidth)
+    this.adjustVolume(e.offsetX, this.panelVolume.offsetWidth);
     this.volumeTotalBar.style = "width:"+ e.offsetX +"px;";
     e.preventDefault();
   }.bind(this));
@@ -176,7 +186,7 @@ function AudioPlayer(node) {
   this.panelVolume.addEventListener("mousemove", function(e){
     // check if the user is dragging the volume slider and animate the slider if so
     if(this.volumeDrag) {
-      this.adjustVolume(e.offsetX, this.panelVolume.offsetWidth)
+      this.adjustVolume(e.offsetX, this.panelVolume.offsetWidth);
       this.volumeTotalBar.style = "width:"+ e.offsetX +"px;";
     }
     e.preventDefault();
@@ -198,9 +208,8 @@ function AudioPlayer(node) {
 
   // listen to transition finish to clean up animation
   this.panelVolume.addEventListener("transitionend", function(e){
-    console.log("animation done");
     if(this.ctrlVolume.dataset.opened=="false") {
-      this.panelVolume.style = "border-width: 0;"
+      this.panelVolume.style = "border-width: 0;";
     }
   }.bind(this));
   // add volume bar to the volume panel:
@@ -233,17 +242,23 @@ function AudioPlayer(node) {
 
 // play a track:
 AudioPlayer.prototype.play = function(){
-  this.playing = true;
-  this.pausing = false;
-  // set correct volume and play
-  this.trackList[this.trackIndex].setVolume(this.globalVolume);
-  this.trackList[this.trackIndex].play();
-  // set play/pause button to pause
-  this.ctrlPlayPause.className = "apControl apPause";
-  this.ctrlPlayPause.innerHTML = "pause";
-  this.ctrlPlayPause.dataset.mode = "pause";
-  // start progress bar
-  this.progressTimer = window.setInterval(this.checkProgress, 10, this);
+  // check availability of media:
+  if(this.trackList[this.trackIndex].canPlay()) {
+    this.playing = true;
+    this.pausing = false;
+    // set correct volume and play
+    this.trackList[this.trackIndex].setVolume(this.globalVolume);
+    this.trackList[this.trackIndex].play();
+    // set play/pause button to pause
+    this.ctrlPlayPause.className = "apControl apPause";
+    this.ctrlPlayPause.innerHTML = "pause";
+    this.ctrlPlayPause.dataset.mode = "pause";
+    // start progress bar
+    this.progressTimer = window.setInterval(this.checkProgress, 10, this);
+  } else {
+    // what happens here?
+
+  }
 };
 
 // pause a track
@@ -393,6 +408,7 @@ AudioPlayer.prototype.adjustVolume = function(chosen, total) {
 function Track(el) {
   this.el = el;
   this.formattedTotalDuration = "";
+  this.available = false;
 
   // add total duration info to track:
   this.lblDuration = document.createElement("span");
@@ -402,7 +418,21 @@ function Track(el) {
 
 Track.prototype.checkState = function(e) {
   // if info is available: add total duration info and cancel interval:
-  if(e.el.readyState===1 || e.el.readyState===2 || e.el.readyState===3 || e.el.readyState===4) {
+  /*
+    different readyStates:
+    0 -> Have nothing: no information about media is available
+    1 -> Have metadata: information about media is available
+    2 -> Have current data: information is available for the current playback position, but not enough to play
+    3 -> Have future data: information is available for a little bit of playback
+    4 -> Enouh data: information for full playback and sufficient network speed to stream is available
+  */
+  var HAVE_NOTHING = 0,
+    HAVE_METADATA = 1,
+    HAVE_CURRENT_DATA = 2,
+    HAVE_FUTURE_DATA = 3,
+    HAVE_ENOUH_DATA = 4;
+
+  if(e.el.readyState===HAVE_METADATA || e.el.readyState===HAVE_CURRENT_DATA || e.el.readyState===HAVE_FUTURE_DATA || e.el.readyState===HAVE_ENOUH_DATA) {
     // format time nicely:
     var ct = e.getTotalTime();
     var ctHours = Math.floor(ct/3600);
@@ -420,14 +450,22 @@ Track.prototype.checkState = function(e) {
     e.lblDuration.innerHTML = e.formattedTotalDuration;
     // append text node to container
     e.el.parentNode.appendChild(e.lblDuration);
+  }
+
+  if(e.el.readyState===HAVE_ENOUH_DATA) {
+    // label track as available for playing:
+    e.available = true;
     // clear interval
     window.clearInterval(e.checkLoadState);
   }
+
 };
 
 Track.prototype.play = function(){
-  this.el.play();
-  this.el.parentNode.className += " apActive";
+  if(this.available) {
+    this.el.play();
+    this.el.parentNode.className += " apActive";
+  }
 };
 
 Track.prototype.pause = function(){
@@ -466,4 +504,8 @@ Track.prototype.setVolume = function(v) {
 
 Track.prototype.resetDuration = function() {
   this.lblDuration.innerHTML = this.formattedTotalDuration;
-}
+};
+
+Track.prototype.canPlay = function() {
+  return this.available;
+};

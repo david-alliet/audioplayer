@@ -8,6 +8,7 @@
   padding: 0;
   border: 2px #aaa solid;
   border-radius: .5em;
+  overflow: hidden;
 }
 
 ul {
@@ -37,8 +38,9 @@ ul li:last-child {
 .apTrack:last-child {
 }
 
-.apTrack:hover {
+.apTrack:hover, .apTrack:focus {
   background: #aaa;
+  outline: none;
 }
 
 .apTrack.apActive {
@@ -162,15 +164,13 @@ ul li:last-child {
   transition-duration: 0.1s;
 }
 
-.apControls .apControl:hover {
+.apControls .apControl:hover, .apControls .apControl:focus {
   margin-top: 0;
   background: #eee;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
-}
-
-.apControls .apControl:focus {
   outline: none;
 }
+
 
 
 
