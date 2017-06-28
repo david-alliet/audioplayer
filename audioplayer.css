@@ -195,6 +195,24 @@ ul li:last-child {
   cursor: pointer;
 }
 
+.opened {
+  border-color: #404040;
+  border-width: 2px;
+  margin-left: .3em;
+  margin-right: .3em;
+  width: 75px;
+}
+.closed {
+  border-color: #404040;
+  margin-left: 0;
+  margin-right: 0;
+  width: 0;
+  border-width: 2px;
+}
+.hidden {
+  border-width: 0;
+}
+
 .apVolumePanel .apIndicatorBar {
   top: 0;
   height: 1em;

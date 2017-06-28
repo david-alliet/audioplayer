@@ -68,8 +68,11 @@ function AudioPlayer(node) {
   this.ctrlPrevious.addEventListener("click", function(e) {
     this.previous();
   }.bind(this));
+  this.ctrlPrevious.addEventListener("mouseout", function(e){
+    e.target.blur();
+  });
 
-  // Play button:
+  // Play button
   this.ctrlPlayPause = document.createElement("button");
   this.ctrlPlayPause.className = "apControl apPlay";
   this.ctrlPlayPause.innerHTML = "play";
@@ -84,8 +87,12 @@ function AudioPlayer(node) {
     }
     e.preventDefault();
   }.bind(this));
+  this.ctrlPlayPause.addEventListener("mouseout", function(e){
+    e.target.blur();
+  });
 
   // previous:
+
   this.ctrlNext = document.createElement("button");
   this.ctrlNext.className = "apControl apNext";
   this.ctrlNext.innerHTML = "&gt;&gt;";
@@ -93,6 +100,9 @@ function AudioPlayer(node) {
   this.ctrlNext.addEventListener("click", function(e) {
     this.next();
   }.bind(this));
+  this.ctrlNext.addEventListener("mouseout", function(e){
+    e.target.blur();
+  });
 
   // stop:
   this.ctrlStop = document.createElement("button");
@@ -104,7 +114,11 @@ function AudioPlayer(node) {
     this.playing = false;
     this.stop();
     e.preventDefault();
-  }.bind(this));
+  }.
+  bind(this));
+  this.ctrlStop.addEventListener("mouseout", function(e){
+    e.target.blur();
+  });
 
   // seek bar:
   this.seekBar = document.createElement("div");
@@ -157,13 +171,17 @@ function AudioPlayer(node) {
   // open or collapse volume panel
   this.ctrlVolume.addEventListener("click", function(e){
     if(e.target.dataset.opened=="false") {
-      this.panelVolume.style = "border-color: #404040; border-width: 2px; margin-left: .3em; margin-right: .3em; width: 75px;";
+      this.panelVolume.className = "apVolumePanel opened";
       e.target.dataset.opened = true;
     } else {
       e.target.dataset.opened = false;
-      this.panelVolume.style = "border-color: #404040; margin-left: 0; margin-right: 0; width: 0px; border-width: 2px;";
+      this.panelVolume.className = "apVolumePanel closed";
     }
   }.bind(this));
+  this.ctrlVolume.addEventListener("mouseout", function(e){
+    e.target.blur();
+  });
+
 
   // volume panel
   this.panelVolume = document.createElement("div");
@@ -209,7 +227,7 @@ function AudioPlayer(node) {
   // listen to transition finish to clean up animation
   this.panelVolume.addEventListener("transitionend", function(e){
     if(this.ctrlVolume.dataset.opened=="false") {
-      this.panelVolume.style = "border-width: 0;";
+      this.panelVolume.className = "apVolumePanel closed hidden";
     }
   }.bind(this));
   // add volume bar to the volume panel:
