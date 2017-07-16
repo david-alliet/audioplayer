@@ -85,7 +85,6 @@ function AudioPlayer(node) {
   this.ctrlPlayPause.addEventListener("mouseout", blur);
 
   // previous:
-
   this.ctrlNext = document.createElement("button");
   this.ctrlNext.className = "apControl apNext";
   this.ctrlNext.innerHTML = "&gt;&gt;";
@@ -140,6 +139,19 @@ function AudioPlayer(node) {
     // only seek in track when either playing or pausing
     if(this.playing || this.pausing) {
       this.seek(e.offsetX, this.seekBar.offsetWidth);
+    }
+  }.bind(this));
+  // event: hit key:
+  this.seekBar.addEventListener("keydown", function(e){
+    console.log(e.code);
+    if(this.playing) {
+      if(e.code==="ArrowLeft") {
+        // seek backward by 5 seconds
+        this.trackList[this.trackIndex].setCurrentTime(this.trackList[this.trackIndex].getCurrentTime()-5);
+      } else if(e.code==="ArrowRight") {
+        // seek forward by 5 seconds
+        this.trackList[this.trackIndex].setCurrentTime(this.trackList[this.trackIndex].getCurrentTime()+5);
+      }
     }
   }.bind(this));
 
@@ -275,8 +287,8 @@ AudioPlayer.prototype.pause = function(){
   this.ctrlPlayPause.innerHTML = "play";
   this.ctrlPlayPause.dataset.mode = "play";
   // pause progress bar
-  window.clearInterval(this.progressTimer);
-  this.progressTimer = null;
+  //window.clearInterval(this.progressTimer);
+  //this.progressTimer = null;
 };
 
 // stop a track completely:
