@@ -259,13 +259,13 @@ function AudioPlayer(node) {
 
 // play a track:
 AudioPlayer.prototype.play = function(){
-  // check availability of media:
-  if(this.trackList[this.trackIndex].canPlay()) {
+  // set correct volume and attempt play
+  this.trackList[this.trackIndex].setVolume(this.globalVolume);
+  var success = this.trackList[this.trackIndex].play();
+
+  if(success) {
     this.playing = true;
     this.pausing = false;
-    // set correct volume and play
-    this.trackList[this.trackIndex].setVolume(this.globalVolume);
-    this.trackList[this.trackIndex].play();
     // set play/pause button to pause
     this.ctrlPlayPause.className = "apControl apPause";
     this.ctrlPlayPause.innerHTML = "pause";
@@ -274,7 +274,7 @@ AudioPlayer.prototype.play = function(){
     this.progressTimer = window.setInterval(this.checkProgress, 10, this);
   } else {
     // what happens here?
-
+    console.log("track not ready for playing");
   }
 };
 
@@ -409,6 +409,11 @@ AudioPlayer.prototype.mute = function() {
 // change the volume of the player
 AudioPlayer.prototype.adjustVolume = function(chosen, total) {
   // calculate new volume
+  // volume can't be negative, but the slider can pass negative values
+  // check if chosen is smaller than 0, set to 0 if so
+  if(chosen<0){
+    chosen = 0;
+  }
   this.globalVolume = chosen / total;
   // adjust volume of current track
   this.trackList[this.trackIndex].setVolume(this.globalVolume);

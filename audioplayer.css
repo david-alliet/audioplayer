@@ -28,6 +28,7 @@ ul li:last-child {
 
 /* tracks styling */
 .apTrack {
+  position: relative;
   padding: .5em 1em;
   margin: 0;
   border-bottom: 1px #aaa solid;
@@ -46,6 +47,15 @@ ul li:last-child {
 .apTrack.apActive {
   font-weight: bold;
   background: #ccc;
+}
+
+.apTrack .apProgressBar {
+  left: 0;
+  height: 100%;
+  opacity: .2;
+  transition-property: width;
+  transition-duration: .3s;
+  transition-timing-function: ease-in-out;
 }
 
 .apTrack .apDuration {
