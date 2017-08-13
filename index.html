@@ -11,7 +11,13 @@
 
 <div class="dal_audioplayer" id="audioplayer" data-mode="globalcontrols">
   <ul>
-    <li><audio src="data/01.mp3" preload="metadata"></audio>Track 01</li>
+    <li>
+      <audio preload="metadata">
+        <source src="data/01.mp3">
+        <source src="data/01.ogg">
+      </audio>
+      Track 01
+    </li>
     <li><audio src="data/02.mp3" preload="metadata"></audio>Track 02</li>
     <li><audio src="data/03.mp3" preload="metadata"></audio>Track 03</li>
   </ul>
