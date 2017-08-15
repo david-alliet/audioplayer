@@ -1,3 +1,4 @@
 */*.mp3
 */*.ogg
 *.log
+node_modules/*
