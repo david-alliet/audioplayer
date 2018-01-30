@@ -139,7 +139,6 @@ ul li:last-child {
 /* close commented backslash hack */
 
 
-
 .apControls .apPane {
   box-sizing: border-box;
   float: left;
@@ -155,7 +154,7 @@ ul li:last-child {
   width: 50%;
 }
 
-.apControls .apPane .apControl {
+.apControls .apControl {
   vertical-align: top;
   position: relative;
   display: inline-block;
@@ -228,3 +227,39 @@ ul li:last-child {
   height: 1em;
   opacity: .3;
 }
+
+
+/* Single track mode:  */
+.dal_audioplayer.single {
+  display: flex;
+  align-items: stretch;
+} 
+
+.single .apControls {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.single .apTrackContainer {
+  flex-grow: 1;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.apTrackContainer ul {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.apTrackContainer li {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+ 
+.apTrackContainer .apProgress {
+  flex-grow: 0;
+  flex-shrink: 0;
+} 

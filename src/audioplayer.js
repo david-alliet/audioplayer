@@ -1,9 +1,11 @@
 // checks for active audioplayer elements on the page
 function detectAudioPlayers() {
-  var nodes = document.getElementsByClassName('dal_audioplayer');
-  for (var i=0; i<nodes.length; i++) {
+  // find out full audio players in the DOM
+  var playerNodes = document.getElementsByClassName('dal_audioplayer');
+  var playerObjects = [];
+  for (var i=0; i<playerNodes.length; i++) {
     // convert each found node into an AudioPlayer
-    var ap = new AudioPlayer(nodes[i]);
+    playerObjects.push(new AudioPlayer(playerNodes[i]));
   }
 }
 
@@ -11,7 +13,7 @@ function detectAudioPlayers() {
 // The main AudioPlayer object
 function AudioPlayer(node) {
   this.audioPlayerElement = node; // the root element of the player
-  this.mode = node.dataset.mode; // mode of the player (currently not implemented)
+  this.mode = "" // indicates if player for one track or several
   this.trackList = []; // will hold all tracks
   this.trackIndex = 0; // what track the player is currently on
   this.totalTracks = 0; // total number of tracks
@@ -47,25 +49,23 @@ function AudioPlayer(node) {
   // controls contain all buttons
   var apControls = document.createElement("div");
   apControls.className = "apControls";
-  // left aligned area for controls
-  var leftControlPane = document.createElement("div");
-  leftControlPane.className = "apPane left";
-  // right aligned area for controls
-  var rightControlPane = document.createElement("div");
-  rightControlPane.className = "apPane right";
+
+
+  /*
+    SINGLE TRACK PLAYER 
+    -------------------
+    -> all functionality for single track player
+  */
+
+  if(this.totalTracks === 1) {
+    console.log("setting up track container");
+    var apTrackContainer = document.createElement("div");
+    apTrackContainer.className = "apTrackContainer"
+  }
+
   // the progress bar area
   var apProgress = document.createElement("div");
   apProgress.className = "apProgress";
-
-  // Previous button:
-  this.ctrlPrevious = document.createElement("button");
-  this.ctrlPrevious.className = "apControl apPrevious";
-  this.ctrlPrevious.innerHTML = "&lt;&lt;";
-  this.tabIndex = this.totalTracks+5;
-  this.ctrlPrevious.addEventListener("click", function(e) {
-    this.previous();
-  }.bind(this));
-  this.ctrlPrevious.addEventListener("mouseout", blur);
 
   // Play button
   this.ctrlPlayPause = document.createElement("button");
@@ -84,66 +84,50 @@ function AudioPlayer(node) {
   }.bind(this));
   this.ctrlPlayPause.addEventListener("mouseout", blur);
 
-  // previous:
-  this.ctrlNext = document.createElement("button");
-  this.ctrlNext.className = "apControl apNext";
-  this.ctrlNext.innerHTML = "&gt;&gt;";
-  this.tabIndex = this.totalTracks+6;
-  this.ctrlNext.addEventListener("click", function(e) {
-    this.next();
-  }.bind(this));
-  this.ctrlNext.addEventListener("mouseout", blur);
-
-  // stop:
-  this.ctrlStop = document.createElement("button");
-  this.ctrlStop.className = "apControl apStop";
-  this.ctrlStop.innerHTML = "stop";
-  this.tabIndex = this.totalTracks+3;
-  this.ctrlStop.addEventListener("click", function(e) {
-    // stop the player
-    this.playing = false;
-    this.stop();
-    e.preventDefault();
-  }.
-  bind(this));
-  this.ctrlStop.addEventListener("mouseout", blur);
+  if(this.totalTracks === 1) {
+    apControls.appendChild(this.ctrlPlayPause);
+  }
 
   // seek bar:
   this.seekBar = document.createElement("div");
   this.seekBar.className = "apSeekBar";
   this.seekBar.tabIndex = this.totalTracks+1;
   this.seekBar.title = "Press the right or left arrow keys to seek forward or backward in the track.";
-  // event: mouse over (indicates seeking)
+
+  // Seek bar event: mouse over (indicates seeking)
   this.seekBar.addEventListener("mouseover", function(e){
     if(this.playing) {
       this.startSeek();
       this.indicatorBar.style="opacity: .2;";
     }
   }.bind(this));
-  // event: mouse move (gets mouse cursor related to element)
+
+  // Seek bar event: mouse move (gets mouse cursor related to element)
   this.seekBar.addEventListener("mousemove", function(e){
     if(this.seeking) {
       // move the progress bar
       this.indicatorBar.style="opacity: .2; width: "+ e.offsetX +"px;";
     }
   }.bind(this));
-  // event: mouse out (indicates stop seeking)
+
+  // Seek bar event: mouse out (indicates stop seeking)
   this.seekBar.addEventListener("mouseout", function(e){
     if(this.playing) {
       this.stopSeek();
       this.indicatorBar.style="opacity: 0;";
     }
   }.bind(this));
-  // event: pressed (indicates seeking to position)
+
+  // Seek bar event: pressed (indicates seeking to position)
   this.seekBar.addEventListener("mousedown", function(e){
     // only seek in track when either playing or pausing
     if(this.playing || this.pausing) {
       this.seek(e.offsetX, this.seekBar.offsetWidth);
     }
   }.bind(this));
-  // event: hit key:
+
+  // Seek bar event: hit key:
   this.seekBar.addEventListener("keydown", function(e){
-    console.log(e.code);
     if(this.playing) {
       if(e.code==="ArrowLeft") {
         // seek backward by 5 seconds
@@ -162,6 +146,16 @@ function AudioPlayer(node) {
   // the actual progress bar
   this.progressBar = document.createElement("div");
   this.progressBar.className = "apProgressBar";
+  
+  // add controls to their proper containers:
+  this.seekBar.appendChild(this.progressBar);
+  this.seekBar.appendChild(this.indicatorBar);
+  apProgress.appendChild(this.seekBar);
+
+
+  // volume panel
+  this.panelVolume = document.createElement("div");
+  this.panelVolume.className = "apVolumePanel";
 
   // Volume button
   this.ctrlVolume = document.createElement("button");
@@ -180,11 +174,9 @@ function AudioPlayer(node) {
     }
   }.bind(this));
   this.ctrlVolume.addEventListener("mouseout", blur);
-
-
-  // volume panel
-  this.panelVolume = document.createElement("div");
-  this.panelVolume.className = "apVolumePanel";
+  if(this.totalTracks === 1) {
+    apControls.appendChild(this.ctrlVolume);
+  }
 
   // Volume indicator bar
   this.volumeTotalBar = document.createElement("div");
@@ -232,28 +224,87 @@ function AudioPlayer(node) {
   // add volume bar to the volume panel:
   this.panelVolume.appendChild(this.volumeTotalBar);
 
+  if(this.totalTracks === 1) {
+    apControls.appendChild(this.panelVolume);
+  }
 
-  // add controls to their proper containers:
-  this.seekBar.appendChild(this.progressBar);
-  this.seekBar.appendChild(this.indicatorBar);
-  apProgress.appendChild(this.seekBar);
-  // apProgress.appendChild(this.txtDuration);
 
-  // add the track controls to the left or right panels
-  leftControlPane.appendChild(this.ctrlPlayPause);
-  leftControlPane.appendChild(this.ctrlStop);
-  rightControlPane.appendChild(this.ctrlVolume);
-  rightControlPane.appendChild(this.panelVolume);
-  rightControlPane.appendChild(this.ctrlPrevious);
-  rightControlPane.appendChild(this.ctrlNext);
 
-  // add panels to the container
-  apControls.appendChild(leftControlPane);
-  apControls.appendChild(rightControlPane);
+  /*
+    MULTIPLE TRACK PLAYER 
+    ---------------------
+    -> all extra functionality for multiple track player
+  */
+  if(this.totalTracks > 1) {
 
-  // add containers to player
-  this.audioPlayerElement.appendChild(apProgress);
-  this.audioPlayerElement.appendChild(apControls);
+    // left aligned area for controls
+    var leftControlPane = document.createElement("div");
+    leftControlPane.className = "apPane left";
+    // right aligned area for controls
+    var rightControlPane = document.createElement("div");
+    rightControlPane.className = "apPane right";
+  
+    // buttons that are only needed in the multiple track player
+    // Previous button:
+    this.ctrlPrevious = document.createElement("button");
+    this.ctrlPrevious.className = "apControl apPrevious";
+    this.ctrlPrevious.innerHTML = "&lt;&lt;";
+    this.tabIndex = this.totalTracks+5;
+    this.ctrlPrevious.addEventListener("click", function(e) {
+      this.previous();
+    }.bind(this));
+    this.ctrlPrevious.addEventListener("mouseout", blur);
+
+    // Next button:
+    this.ctrlNext = document.createElement("button");
+    this.ctrlNext.className = "apControl apNext";
+    this.ctrlNext.innerHTML = "&gt;&gt;";
+    this.tabIndex = this.totalTracks+6;
+    this.ctrlNext.addEventListener("click", function(e) {
+      this.next();
+    }.bind(this));
+    this.ctrlNext.addEventListener("mouseout", blur);
+  
+    // Stop button:
+    this.ctrlStop = document.createElement("button");
+    this.ctrlStop.className = "apControl apStop";
+    this.ctrlStop.innerHTML = "stop";
+    this.tabIndex = this.totalTracks+3;
+    this.ctrlStop.addEventListener("click", function(e) {
+      // stop the player
+      this.playing = false;
+      this.stop();
+      e.preventDefault();
+    }.bind(this));
+    this.ctrlStop.addEventListener("mouseout", blur);
+  
+    // add the track controls to the left or right panels
+    leftControlPane.appendChild(this.ctrlPlayPause);
+    leftControlPane.appendChild(this.ctrlStop);
+    rightControlPane.appendChild(this.ctrlVolume);
+    rightControlPane.appendChild(this.panelVolume);
+    rightControlPane.appendChild(this.ctrlPrevious);
+    rightControlPane.appendChild(this.ctrlNext);
+
+    // add panels to the container
+    apControls.appendChild(leftControlPane);
+    apControls.appendChild(rightControlPane);
+
+    this.audioPlayerElement.appendChild(apProgress);
+    this.audioPlayerElement.appendChild(apControls);
+  } else {
+    
+    var tracklistNode = this.audioPlayerElement.removeChild(this.audioPlayerElement.getElementsByTagName("ul")[0]);
+
+    // add containers to single track player
+    this.audioPlayerElement.appendChild(apControls);
+    apTrackContainer.appendChild(tracklistNode);
+    apTrackContainer.appendChild(apProgress);
+    this.audioPlayerElement.appendChild(apTrackContainer);
+    
+    // add class to indicate this is a player for a single track:
+    this.audioPlayerElement.className += " single";
+  }
 }
 
 
