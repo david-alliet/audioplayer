@@ -2,3 +2,4 @@
 */*.ogg
 *.log
 node_modules/*
+dist/audioplayer.js
