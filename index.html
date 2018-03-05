@@ -42,7 +42,12 @@
 <script src="src/events.js" type="text/javascript"></script>
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded", function(e){
-    detectAudioPlayers();
+    var playerNodes = document.getElementsByClassName('dal_audioplayer');
+    var playerObjects = [];
+    for (var i=0; i<playerNodes.length; i++) {
+      // convert each found node into an AudioPlayer
+      playerObjects.push(new AudioPlayer(playerNodes[i]));
+    }
   });
 </script>
 

@@ -1,15 +1,3 @@
-// checks for active audioplayer elements on the page
-function detectAudioPlayers() {
-  // find out full audio players in the DOM
-  var playerNodes = document.getElementsByClassName('dal_audioplayer');
-  var playerObjects = [];
-  for (var i=0; i<playerNodes.length; i++) {
-    // convert each found node into an AudioPlayer
-    playerObjects.push(new AudioPlayer(playerNodes[i]));
-  }
-}
-
-
 // The main AudioPlayer object
 function AudioPlayer(node) {
   this.audioPlayerElement = node; // the root element of the player
