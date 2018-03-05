@@ -4,10 +4,10 @@
 function playTrack(e) {
   var el;
   // see what element has been clicked on
-  if(e.srcElement.className=="apProgressBar") {
-    el = e.srcElement.parentNode;
+  if(e.target.className=="apProgressBar") {
+    el = e.target.parentNode;
   } else {
-    el = e.srcElement;
+    el = e.target;
   }
   // detect the type of event and respond when the right event is tracked
   if(e.type==="mousedown" || (e.type==="keypress" && (e.code==="Space" || e.code==="Enter"))) {
