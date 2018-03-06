@@ -46,7 +46,6 @@ function AudioPlayer(node) {
   */
 
   if(this.totalTracks === 1) {
-    console.log("setting up track container");
     var apTrackContainer = document.createElement("div");
     apTrackContainer.className = "apTrackContainer"
   }
