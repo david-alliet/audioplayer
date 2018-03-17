@@ -75,32 +75,30 @@ function Track(el) {
     if(this.el.readyState===HAVE_ENOUH_DATA) {
       // label track as available for playing:
       this.available = true;
-      // clear interval
-      window.clearInterval(e.checkLoadState);
     }
-    this.loadProgress.style = "width: 100%;";
+    //this.loadProgress.style = "width: 100%;";
   }.bind(this));
 
   // track can't continue to play (display some sort of buffering indication)
   this.el.addEventListener("waiting", function(e){
+    // buffering animation goes here
+    this.el.parentNode.className += " apBuffering";
     console.log("buffering...");
   }.bind(this));
 
   // track is resuming after buffering
   this.el.addEventListener("playing", function(e){
+    // cancel buffering animation, if there is one
     console.log("resuming");
+    var classes = this.el.parentNode.className;
+    this.el.parentNode.className = classes.replace(" apBuffering", "");
   }.bind(this));
 }
 
 
-Track.prototype.play = function(){
-  if(this.available) {
+Track.prototype.play = function(){  
     this.el.play();
     this.el.parentNode.className += " apActive";
-    return true;
-  } else {
-    return false;
-  }
 };
 
 Track.prototype.pause = function(){

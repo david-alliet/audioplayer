@@ -182,7 +182,7 @@ ul li:last-child {
 
 
 
-
+/* Volume panel */
 .apVolumePanel {
   display: inline-block;
   position: relative;
@@ -229,6 +229,8 @@ ul li:last-child {
 }
 
 
+
+
 /* Single track mode:  */
 .dal_audioplayer.single {
   display: flex;
@@ -263,3 +265,40 @@ ul li:last-child {
   flex-grow: 0;
   flex-shrink: 0;
 } 
+
+
+/* buffering animation */
+.apTrack.apBuffering {
+  background: repeating-linear-gradient(-45deg, #ddd, #ddd 0.5em, #eee 0.5em, #eee 1em);
+  animation: 0.32s linear 0s infinite normal bufferanim;
+}
+
+@keyframes bufferanim {
+  0% {
+    background: repeating-linear-gradient(-45deg, #ddd, #ddd 0.5em, #eee 0.5em, #eee 1em);
+  }
+  12.5% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.125em, #ddd 0.625em, #eee 0.625em, #eee 1.125em);
+  }
+  25% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.25em, #ddd 0.75em, #eee 0.75em, #eee 1.25em);
+  }
+  37.5% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.375em, #ddd 0.875em, #eee 0.875em, #eee 1.375em);
+  }
+  50% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.5em, #ddd 1em, #eee 1em, #eee 1.5em);
+  }
+  50% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.625em, #ddd 1.125em, #eee 1.125em, #eee 1.625em);
+  }
+  75% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.75em, #ddd 1.25em, #eee 1.25em, #eee 1.75em);
+  }
+  75% {
+    background: repeating-linear-gradient(-45deg, #ddd 0.875em, #ddd 1.375em, #eee 1.375em, #eee 1.875em);
+  }
+  100% {
+    background: repeating-linear-gradient(-45deg, #ddd 1em, #ddd 1.5em, #eee 1.5em, #eee 2em);
+  }
+}

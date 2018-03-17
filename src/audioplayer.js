@@ -299,21 +299,17 @@ function AudioPlayer(node) {
 AudioPlayer.prototype.play = function(){
   // set correct volume and attempt play
   this.trackList[this.trackIndex].setVolume(this.globalVolume);
-  var success = this.trackList[this.trackIndex].play();
+  this.trackList[this.trackIndex].play();
+  
+  this.playing = true;
+  this.pausing = false;
+  // set play/pause button to pause
+  this.ctrlPlayPause.className = "apControl apPause";
+  this.ctrlPlayPause.innerHTML = "pause";
+  this.ctrlPlayPause.dataset.mode = "pause";
+  // start progress bar
+  this.progressTimer = window.setInterval(this.checkProgress, 10, this);
 
-  if(success) {
-    this.playing = true;
-    this.pausing = false;
-    // set play/pause button to pause
-    this.ctrlPlayPause.className = "apControl apPause";
-    this.ctrlPlayPause.innerHTML = "pause";
-    this.ctrlPlayPause.dataset.mode = "pause";
-    // start progress bar
-    this.progressTimer = window.setInterval(this.checkProgress, 10, this);
-  } else {
-    // what happens here?
-    console.log("track not ready for playing");
-  }
 };
 
 // pause a track
