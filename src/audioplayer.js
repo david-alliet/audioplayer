@@ -392,7 +392,13 @@ AudioPlayer.prototype.checkProgress = function(e){
   e.progressBar.style = "width: "+ (ct/tt)*100 +"%";
   // check if a track has ended and switch to next track
   if(e.trackList[e.trackIndex].isEnded()) {
-    e.next();
+    if(e.getTotalTracks()>1) {
+      // more than one track: proceed to next
+      e.next();
+    } else {
+      // stop the player
+      e.stop();
+    }
   }
 };
 
@@ -452,3 +458,8 @@ AudioPlayer.prototype.adjustVolume = function(chosen, total) {
   // adjust volume of current track
   this.trackList[this.trackIndex].setVolume(this.globalVolume);
 };
+
+// returns the total number of tracks:
+AudioPlayer.prototype.getTotalTracks = function() {
+  return this.totalTracks;
+}
